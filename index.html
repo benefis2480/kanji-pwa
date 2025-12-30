@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <title>2年生漢字クイズ</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;margin:0;padding:16px;}
+    .card{max-width:520px;margin:0 auto;border:1px solid #ddd;border-radius:16px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+    .big{font-size:64px;line-height:1;text-align:center;margin:10px 0 16px;}
+    input{width:100%;font-size:18px;padding:12px;border-radius:12px;border:1px solid #ccc;}
+    button{width:100%;padding:12px;font-size:18px;border-radius:12px;border:0;margin-top:10px}
+    .row{display:flex;gap:10px}
+    .row button{width:50%}
+    .msg{margin-top:12px;min-height:24px}
+    .small{color:#666;font-size:13px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>2年生 漢字クイズ</h2>
+    <div class="small">読みをひらがなで入れてね（例：こう）</div>
+    <div class="big" id="qKanji">校</div>
+
+    <input id="answer" placeholder="よみ（ひらがな）" autocomplete="off" />
+    <div class="row">
+      <button id="checkBtn">答え合わせ</button>
+      <button id="nextBtn">次へ</button>
+    </div>
+
+    <div class="msg" id="msg"></div>
+    <div class="small" id="stats"></div>
+  </div>
+
+<script>
+  // ★ ここに「正しい読み」データを入れます（例。後でCSVからコピペ生成も可）
+  const items = [
+    {kanji:"校", yomi:["こう"], example:"学校"},
+    {kanji:"海", yomi:["うみ"], example:"海外"},
+    {kanji:"春", yomi:["はる"], example:"春休み"},
+  ];
+
+  let i = 0;
+  let correct = 0, total = 0;
+
+  const qKanji = document.getElementById("qKanji");
+  const answer = document.getElementById("answer");
+  const msg = document.getElementById("msg");
+  const stats = document.getElementById("stats");
+
+  function showQuestion() {
+    const it = items[i];
+    qKanji.textContent = it.kanji;
+    answer.value = "";
+    msg.textContent = "";
+    stats.textContent = `正解 ${correct} / ${total}　例：${it.example}`;
+    answer.focus();
+  }
+
+  function normalize(s){ return (s||"").trim().replace(/\s+/g,""); }
+
+  document.getElementById("checkBtn").addEventListener("click", () => {
+    const it = items[i];
+    const a = normalize(answer.value);
+    total++;
+    if (it.yomi.some(y => normalize(y) === a)) {
+      correct++;
+      msg.textContent = "○ せいかい！";
+    } else {
+      msg.textContent = `× ちがうよ。答え：${it.yomi.join(" / ")}（例：${it.example}）`;
+    }
+    stats.textContent = `正解 ${correct} / ${total}　例：${it.example}`;
+  });
+
+  document.getElementById("nextBtn").addEventListener("click", () => {
+    i = (i + 1) % items.length;
+    showQuestion();
+  });
+
+  // Enterでも答え合わせ
+  answer.addEventListener("keydown", (e)=>{ if(e.key==="Enter") document.getElementById("checkBtn").click(); });
+
+  // PWA: Service Worker登録
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./sw.js");
+  }
+
+  showQuestion();
+</script>
+</body>
+</html>
