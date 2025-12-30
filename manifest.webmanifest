@@ -1,8 +1,0 @@
-{
-  "name": "2年生漢字クイズ",
-  "short_name": "漢字クイズ",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff"
-}
