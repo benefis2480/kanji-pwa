@@ -1,5 +1,4 @@
 [
-  {"id":"K001","kanji":"引","reading":"","example":""},
-  {"id":"K002","kanji":"羽","reading":"","example":""},
-  {"id":"K003","kanji":"雲","reading":"","example":""}
+  {"id":"K001","kanji":"引","reading":["イン","ひ(く)"],"example":["引く","引き算"]},
+  ...
 ]
